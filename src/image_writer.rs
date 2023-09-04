@@ -12,9 +12,10 @@ pub fn write_image(data: Vec<Color>, width: u32, height: u32) {
     file.write(format!("{} {}\n\n", width, height).to_string().as_bytes()).expect("Failed to write width and/or height.");
     file.write("255\n\n".as_bytes()).expect("Failed to write the maximum value.");
 
-    for i in 0..data.len() {
-        let pixel = data[i];
-        let upixel = pixel.map(|val: f32| (val * 256.0).floor().clamp(0.0, 255.0) as u8);
-        file.write(format!("{} {} {}\n", upixel[0], upixel[1], upixel[2]).to_string().as_bytes()).expect("Failed to write an element of data.");
+    for pixel in data {
+        let r = (pixel.r() * 256.0).floor().clamp(0.0, 255.0) as u8;
+        let g = (pixel.g() * 256.0).floor().clamp(0.0, 255.0) as u8;
+        let b = (pixel.b() * 256.0).floor().clamp(0.0, 255.0) as u8;
+        file.write(format!("{} {} {}\n", r, g, b).to_string().as_bytes()).expect("Failed to write an element of data.");
     }
 }
