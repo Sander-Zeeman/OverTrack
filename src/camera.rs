@@ -42,7 +42,7 @@ impl Camera {
                 let pos = pixel00 + Vec3::new(j as f32 * hori_step, (img_height - i - 1) as f32 * vert_step, 0.0);
                 let dir = pos - cam_pos;
                 let ray = Ray::new(pos, dir);
-                data.push(ray.trace(scene));
+                data.push(scene.trace(ray));
             }
         }
 

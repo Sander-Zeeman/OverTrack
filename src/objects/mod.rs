@@ -1,7 +1,7 @@
 pub mod sphere;
 
-use crate::ray::Ray;
+use crate::ray::{Hit, Ray};
 
 pub trait Object {
-    fn intersects(self, ray: Ray) -> bool;
+    fn intersects(&self, ray: &Ray) -> Option<Hit>;
 }
