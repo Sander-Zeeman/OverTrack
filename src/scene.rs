@@ -35,8 +35,13 @@ impl Scene {
         }
 
         match closest_hit {
-            Some(hit) => hit.color(),
-            None => Color::default()
+            Some(hit) => {
+                (hit.normal() + Color::new(1.0, 1.0, 1.0)) / 2.0
+            },
+            None => {
+                let a = (ray.direction().y() + 1.0) / 2.0;
+                Color::new(1.0, 1.0, 1.0) * (1.0 - a) + Color::new(0.5, 0.7, 1.0) * a
+            }
         }
     }
 }
