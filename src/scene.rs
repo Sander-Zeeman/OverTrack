@@ -1,6 +1,6 @@
 use crate::objects::Object;
 use crate::ray::{Hit, Ray};
-use crate::types::Color;
+use crate::linalg::Color;
 
 pub struct Scene {
     objects: Vec<Box<dyn Object>>

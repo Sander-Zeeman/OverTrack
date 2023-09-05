@@ -1,6 +1,5 @@
 use std::ops::{Add, Sub, Mul, Div};
 
-
 #[derive(Debug, Copy, Clone)]
 pub struct Vec3 {
     x: f32,

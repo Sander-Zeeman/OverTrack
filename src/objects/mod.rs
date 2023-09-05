@@ -1,7 +1,7 @@
 pub mod sphere;
 
 use crate::ray::{Hit, Ray};
-use crate::types::{Direction, Point};
+use crate::linalg::{Direction, Point};
 
 pub trait Object {
     fn intersects(&self, ray: &Ray) -> Option<Hit>;

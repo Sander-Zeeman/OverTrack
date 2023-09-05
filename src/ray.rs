@@ -1,4 +1,4 @@
-use crate::types::{Point, Direction};
+use crate::linalg::{Point, Direction};
 
 pub struct Ray {
     origin: Point,
