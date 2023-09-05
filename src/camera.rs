@@ -30,8 +30,8 @@ impl Camera {
         let cam_pos = Point::default();
         let hori_step = self.vp_width / img_width as f32;
         let vert_step = self.vp_height / img_height as f32;
-        let vp_top_left = cam_pos - Point::new(self.vp_width / 2.0, self.vp_height / 2.0, self.focal_length);
-        let pixel00 = vp_top_left + Vec3::new(hori_step / 2.0, vert_step / 2.0, 0.0);
+        let vp_top_left = cam_pos - Point::new(self.vp_width, self.vp_height, 2.0 * self.focal_length) / 2.0;
+        let pixel00 = vp_top_left + Vec3::new(hori_step, vert_step, 0.0) / 2.0;
 
         println!("Started the render!");
 
@@ -41,7 +41,7 @@ impl Camera {
             for j in 0..img_width {
                 let pos = pixel00 + Vec3::new(j as f32 * hori_step, (img_height - i - 1) as f32 * vert_step, 0.0);
                 let dir = pos - cam_pos;
-                let ray = Ray::new(pos, dir);
+                let ray = Ray::new(cam_pos, dir);
                 data.push(scene.trace(ray));
             }
         }
