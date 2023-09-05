@@ -1,3 +1,4 @@
+use crate::image_writer::write_image;
 use crate::ray::Ray;
 use crate::types::{Point, Color, Vec3};
 use crate::scene::Scene;
@@ -26,7 +27,7 @@ impl Camera {
         }
     }
 
-    pub fn render(self, scene: &Scene, img_width: u32, img_height: u32) -> Vec<Color> {
+    pub fn render(self, scene: &Scene, img_width: u32, img_height: u32) {
         let cam_pos = Point::default();
         let hori_step = self.vp_width / img_width as f32;
         let vert_step = self.vp_height / img_height as f32;
@@ -46,8 +47,7 @@ impl Camera {
             }
         }
 
+        write_image(data, img_width, img_height);
         println!("Finished the render!");
-
-        data
     }
 }

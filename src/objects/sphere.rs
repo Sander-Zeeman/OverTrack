@@ -1,6 +1,6 @@
 use crate::objects::Object;
 use crate::ray::{Hit, Ray};
-use crate::types::{Point, Color, Direction};
+use crate::types::{Point, Direction};
 
 pub struct Sphere {
     center: Point,
