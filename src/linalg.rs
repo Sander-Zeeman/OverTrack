@@ -39,6 +39,14 @@ impl Vec3 {
     pub fn length(self) -> f32 {
         self.length_sq().sqrt()
     }
+
+    pub fn clamp(self, min: f32, max: f32) -> Self {
+        Vec3::new(
+            self.x.clamp(min, max),
+            self.y.clamp(min, max),
+            self.z.clamp(min, max)
+        )
+    }
 }
 
 impl Add for Vec3 {
