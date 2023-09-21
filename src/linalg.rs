@@ -1,4 +1,6 @@
-use std::ops::{Add, Sub, Mul, Div};
+use std::{ops::{Add, Sub, Mul, Div}, f32::EPSILON};
+
+use rand::Rng;
 
 #[derive(Debug, Copy, Clone)]
 pub struct Vec3 {
@@ -20,9 +22,7 @@ impl Vec3 {
         Vec3 { x, y, z }
     }
 
-    pub fn x(self) -> f32 { self.x }
     pub fn y(self) -> f32 { self.y }
-    pub fn z(self) -> f32 { self.z }
 
     pub fn r(self) -> f32 { self.x }
     pub fn g(self) -> f32 { self.y }
@@ -46,6 +46,26 @@ impl Vec3 {
             self.y.clamp(min, max),
             self.z.clamp(min, max)
         )
+    }
+
+    pub fn reflect(self, other: Self) -> Self {
+        self - other * self.dot(other) * 2.0
+    }
+
+    pub fn random_unit_vector() -> Vec3 {
+        let mut rng = rand::thread_rng();
+        let mut random_vector;
+        loop {
+            random_vector = Vec3 { x: rng.gen_range(-1.0..1.0), y: rng.gen_range(-1.0..1.0), z: rng.gen_range(-1.0..1.0) };
+            if random_vector.length_sq() <= 1.0 {
+                break;
+            }
+        }
+        random_vector / random_vector.length()
+    }
+
+    pub fn is_zero(self) -> bool {
+        self.x.abs() < EPSILON && self.y.abs() < EPSILON && self.z.abs() < EPSILON
     }
 }
 
@@ -81,6 +101,18 @@ impl Mul<f32> for Vec3 {
             x: self.x * other,
             y: self.y * other,
             z: self.z * other
+        }
+    }
+}
+
+impl Mul<Vec3> for Vec3 {
+    type Output = Self;
+
+    fn mul(self, other: Vec3) -> Self::Output {
+        Self {
+            x: self.x * other.x,
+            y: self.y * other.y,
+            z: self.z * other.z
         }
     }
 }

@@ -15,7 +15,11 @@ impl Scene {
         self.objects.push(obj);
     }
 
-    pub fn trace(&self, ray: Ray) -> Color {
+    pub fn trace(&self, ray: Ray, depth: u32) -> Color {
+        if depth <= 0 {
+            return Color::new(0.0, 0.0, 0.0);
+        }
+
         let mut closest_hit: Option<Hit> = None;
 
         for obj in &self.objects {
@@ -36,7 +40,9 @@ impl Scene {
 
         match closest_hit {
             Some(hit) => {
-                (hit.normal() + Color::new(1.0, 1.0, 1.0)) / 2.0
+                let (attenuation, scattered) = hit.material().scatter(&ray, &hit);
+                let acneless_scattered = Ray::new(scattered.origin() + hit.normal() * 0.001, scattered.direction());
+                attenuation * self.trace(acneless_scattered, depth - 1)
             },
             None => {
                 let a = (ray.direction().y() + 1.0) / 2.0;

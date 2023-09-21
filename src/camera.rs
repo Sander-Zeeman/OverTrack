@@ -13,30 +13,25 @@ pub struct Camera {
     vp_height: f32,
     img_width: u32,
     img_height: u32,
-    samples_per_pixel: u32
+    samples_per_pixel: u32,
+    max_depth: u32
 }
 
 impl Camera {
-    pub fn default() -> Camera {
-        Camera {
-            focal_length: 1.0,
-            vp_width: 2.0 * 16.0 / 9.0,
-            vp_height: 2.0,
-            img_width: (400.0 * 16.0 / 9.0) as u32,
-            img_height: 400,
-            samples_per_pixel: 10
-        }
-    }
-
-    pub fn new(focal_length: f32, viewport_width: f32, viewport_height: f32, img_width: u32, img_height: u32, samples_per_pixel: u32) -> Camera {
+    pub fn new(focal_length: f32, viewport_width: f32, viewport_height: f32, img_width: u32, img_height: u32, samples_per_pixel: u32, max_depth: u32) -> Camera {
         Camera {
             focal_length,
             vp_width: viewport_width,
             vp_height: viewport_height,
             img_width,
             img_height,
-            samples_per_pixel
+            samples_per_pixel,
+            max_depth
         }
+    }
+
+    fn to_gamma(val: f32) -> f32 {
+        val.sqrt()
     }
 
     fn write_image(data: Vec<Color>, width: u32, height: u32) {
@@ -48,9 +43,9 @@ impl Camera {
         file.write("255\n\n".as_bytes()).expect("Failed to write the maximum value.");
     
         for pixel in data {
-            let r = (pixel.r() * 256.0).floor().clamp(0.0, 255.0) as u8;
-            let g = (pixel.g() * 256.0).floor().clamp(0.0, 255.0) as u8;
-            let b = (pixel.b() * 256.0).floor().clamp(0.0, 255.0) as u8;
+            let r = (Self::to_gamma(pixel.r()) * 256.0).floor().clamp(0.0, 255.0) as u8;
+            let g = (Self::to_gamma(pixel.g()) * 256.0).floor().clamp(0.0, 255.0) as u8;
+            let b = (Self::to_gamma(pixel.b()) * 256.0).floor().clamp(0.0, 255.0) as u8;
             file.write(format!("{} {} {}\n", r, g, b).to_string().as_bytes()).expect("Failed to write an element of data.");
         }
     }
@@ -83,7 +78,7 @@ impl Camera {
                     let pos = cam_pos;
                     let dir = sample - pos;
                     let ray = Ray::new(pos, dir);
-                    total_color = total_color + scene.trace(ray);
+                    total_color = total_color + scene.trace(ray, self.max_depth);
                 }
 
                 let avg_color = total_color / self.samples_per_pixel as f32;

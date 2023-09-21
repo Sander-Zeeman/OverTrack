@@ -1,15 +1,20 @@
-use crate::objects::Object;
+use std::rc::Rc;
+
+use crate::materials::Material;
 use crate::ray::{Hit, Ray};
 use crate::linalg::{Point, Direction};
+
+use super::Object;
 
 pub struct Sphere {
     center: Point,
     radius: f32,
+    material: Rc<dyn Material>
 }
 
 impl Sphere {
-    pub fn new(center: Point, radius: f32) -> Sphere {
-        Sphere { center, radius }
+    pub fn new(center: Point, radius: f32, material: Rc<dyn Material>) -> Sphere {
+        Sphere { center, radius, material }
     }
 }
 
@@ -42,14 +47,14 @@ impl Object for Sphere {
             t = t1.max(t2);
         }
 
-        let mut N = self.normal(ray.at(t));
+        let mut normal = self.normal(ray.at(t));
         let mut facing_front = true;
-        if ray_dir.dot(N) > 0.0 {
-            N = N * -1.0;
+        if ray_dir.dot(normal) > 0.0 {
+            normal = normal * -1.0;
             facing_front = false;
         }
 
-        Some(Hit::new(t, ray.at(t), N, facing_front))
+        Some(Hit::new(t, ray.at(t), normal, facing_front, self.material.clone()))
     }
 
     fn normal(&self, hit_point: Point) -> Direction {
