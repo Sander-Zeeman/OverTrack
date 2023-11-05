@@ -48,8 +48,15 @@ impl Vec3 {
         )
     }
 
-    pub fn reflect(self, other: Self) -> Self {
-        self - other * self.dot(other) * 2.0
+    pub fn reflect(self, normal: Self) -> Self {
+        self - normal * self.dot(normal) * 2.0
+    }
+
+    pub fn refract(self, normal: Self, index_in: f32, index_out: f32) -> Self {
+        let cos_theta = normal.dot(self * -1.0).min(1.0);
+        let perpendicular = (self + normal * cos_theta) * (index_in / index_out);
+        let parallel = normal * -((1.0 - perpendicular.length_sq()).abs()).sqrt();
+        perpendicular + parallel
     }
 
     pub fn random_unit_vector() -> Vec3 {

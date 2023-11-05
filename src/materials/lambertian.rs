@@ -15,12 +15,12 @@ impl Lambertian {
 }
 
 impl Material for Lambertian {
-    fn scatter(&self, _ray: &Ray, hit: &Hit) -> (Color, Ray) {
+    fn scatter(&self, _ray: &Ray, hit: &Hit) -> (Color, Ray, bool) {
         let mut direction = hit.normal() + Vec3::random_unit_vector();
         if direction.is_zero() {
             direction = hit.normal();
         }
 
-        (self.albedo, Ray::new(hit.pos(), direction))
+        (self.albedo, Ray::new(hit.pos(), direction / direction.length()), true)
     }
 }
